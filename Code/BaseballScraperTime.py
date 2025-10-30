@@ -14,20 +14,15 @@ chrome_options.add_argument("--window-size=1920x1080")
 
 service = Service(chrome_driver_path)
 
-name = []
-swing = []
-hit = []
-score = []
-
-with open("game.csv", "w", encoding = "utf-8", newline = "") as file:
+with open("gameTime.csv", "w", encoding = "utf-8", newline = "") as file:
     writer = csv.writer(file)
-    writer.writerow(["matchID,氏名,打数,安打,打率,打点"])
+    writer.writerow(["matchID,時間帯"])
     for i in range(4, 11):
         driver = webdriver.Chrome(options=chrome_options)
         driver.get("https://npb.jp/bis/teams/calendar_c_" + f"{i:02d}" + ".html")
 
         driver.implicitly_wait(1)
-        time.sleep(3)
+        time.sleep(1)
 
         links = []
 
@@ -55,6 +50,8 @@ with open("game.csv", "w", encoding = "utf-8", newline = "") as file:
             matchTimeString = matchTime[0].text.split(" ")
             matchTimeString = matchTimeString[3].split("　")
             print(matchTimeString[0][2:4], matchTimeString[1][2:4])
+
+            writer.writerow([f"{matchID},{matchTimeString[0][2:4]} - {matchTimeString[1][2:4]}"])
 
         driver.quit()
         time.sleep(1)
