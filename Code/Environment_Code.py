@@ -55,7 +55,7 @@ with open("Data/Environment.csv", "w", encoding="utf-8", newline="") as file:
 
             # 各時間帯（1時間ごと）のデータを抽出
             for i in range(int(len(cells) / 16)):  # 1行あたり16列のデータがある
-                date = f"2025-{month:02d}-{day:02d}"  # 日時を整形（例：2025-03-01 01時）
+                date = f"2025{month:02d}{day:02d}"  # 日時を整形（例：2025-03-01 01時）
                 time_label = f"{i+1:02d}:00"  # 時刻を整形（例：01:00）
 
                 # 各項目を順に取得
