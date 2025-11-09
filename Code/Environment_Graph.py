@@ -1,7 +1,7 @@
 # ファイル名：Environment_Graph.py
 # 作成者：ディウ（Pitipat Wattananantapan）
 # 作成日：2025年11月3日
-# 内容：試合データと環境データを組み合わせ、打率と気象条件（気温・湿度・日照時間・視程）の関係を分析・可視化するプログラム
+# 内容：試合データと環境データを組み合わせ、打率と気象条件（気温・湿度・日照時間・視程・天気）の関係を分析・可視化するプログラム
 
 import numpy as np
 import pandas as pd
@@ -233,3 +233,4 @@ plt.yticks(y_ticks)
 plt.tight_layout()
 plt.savefig('Code/graphs/Weather.png')
 plt.show()
+
