@@ -216,14 +216,14 @@ weather_groups = df.groupby('最頻天気')['batting'].apply(list)
 
 bp = plt.boxplot(weather_groups, labels=weather_groups.index, patch_artist=True, widths=0.3, whis=(0, 100))
 
-box_colors = ['peachpuff', 'orange', 'tomato', 'skyblue']  # adjust to number of weather types
+box_colors = ['peachpuff', 'orange', 'tomato', 'skyblue']
 for patch, color in zip(bp['boxes'], box_colors):
     patch.set_facecolor(color)
     
 for median_line in bp['medians']:
     median_line.set(color='black')
 
-plt.xticks(fontsize=15, fontname="UD Digi Kyokasho N")  # adjust size and font
+plt.xticks(fontsize=15, fontname="UD Digi Kyokasho N")
 plt.ylabel("打率 [%]", fontsize=15, fontname="UD Digi Kyokasho N")
 plt.xlabel("天気", fontsize=15, fontname="UD Digi Kyokasho N")
 plt.title("打率と天気の関係 (2025年3月28日〜2025年10月4日)", fontsize=16, fontname="UD Digi Kyokasho N")
