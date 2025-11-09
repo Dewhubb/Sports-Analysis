@@ -1,0 +1,139 @@
+# アントニ
+
+import pandas as pd
+import numpy as np
+import matplotlib.pyplot as plt
+import csv
+import warnings
+
+warnings.simplefilter(action='ignore', category=FutureWarning)
+
+playerDF = pd.read_csv("players2.csv")
+
+teamNames = {"Hiroshima": "広島東洋カープ", "Hokkaido": "北海道日本ハムファイターズ", "Fukuoka": "福岡ソフトバンクホークス", "Hanshin": "阪神タイガース", "Yomiuri": "読売ジャイアンツ"}
+
+with open("analyze.csv", mode = "w", encoding = "utf-8", newline='') as file:
+    writer = csv.writer(file, quoting = csv.QUOTE_NONE, delimiter='\t', escapechar='\t')
+    writer.writerow(["エリア,打率,気温(°C)"])
+
+    for key, value in teamNames.items():
+        environmentDF = pd.read_csv(f"environment{key}.csv")
+
+        gameDF = pd.read_csv(f"game{key}.csv")
+        gameTimeDF = pd.read_csv(f"gameTime{key}.csv")
+
+        # old format
+        # gameTimeDF["開始時間"] = gameTimeDF["時間帯"].str[:2].astype(int)
+        # gameTimeDF["終了時間"] = gameTimeDF["時間帯"].str[5:].astype(int)
+
+        environmentGameDF = pd.DataFrame(columns = environmentDF.columns)
+
+        # 気象データ
+        for row in gameTimeDF.itertuples():
+            environmentDFBufferAppend = environmentDF[environmentDF["日付"] == row.matchID]
+            environmentDFBufferAppend["時刻"] = environmentDFBufferAppend["時刻"].str[0:2].astype(int)
+            environmentDFBufferAppend = environmentDFBufferAppend[(environmentDFBufferAppend["時刻"] >= row.開始時間) & (environmentDFBufferAppend["時刻"] <= row.終了時間)]
+            environmentGameDF = (environmentDFBufferAppend if environmentGameDF.empty else pd.concat([environmentGameDF, environmentDFBufferAppend], ignore_index = True))
+
+        environmentGameDF = environmentGameDF.groupby("日付")["気温(°C)"].mean()
+
+        playersHitRateToTemp = []
+
+        print(environmentGameDF)
+
+        # 試合データ
+        for row in gameDF.itertuples():
+            currentName = row[2]
+            currentHit = int(row[3])
+            currentHitRate = float(row[5])
+            currentDate = row[1]
+
+            if (currentHit == 0):
+                continue
+        
+            try:
+                currentAvgTemp = environmentGameDF[int(currentDate)]
+            except:
+                continue
+
+            area = playerDF.loc[(playerDF["名前"] == currentName) & (playerDF["チーム"] == value)].エリア
+            
+            # found = False
+            # for i in range(len(playersHitRateToTemp)):
+            #     if (currentName in playersHitRateToTemp[i]):
+            #         found = True
+            #         foundIndex = i
+            #         break
+
+            # if (found):
+            #     playersHitRateToTemp[foundIndex][1].append(currentHitRate)
+            #     playersHitRateToTemp[foundIndex][2].append(currentAvgTemp)
+            # else:
+            #     playersHitRateToTemp.append([currentName, [currentHitRate], [currentAvgTemp]])
+
+            writer.writerow([f"{area.iloc[0]},{currentHitRate},{currentAvgTemp}"])
+
+data = pd.read_csv("analyze.csv")
+
+hitRate = []
+hitRate0 = pd.Series([])
+hitRate1 = pd.Series([])
+hitRate2 = pd.Series([])
+temp = []
+temp0 = pd.Series([])
+temp1 = pd.Series([])
+temp2 = pd.Series([])
+
+for row in data.itertuples():
+    hitRate.append(row[2])
+    temp.append(row[3])
+
+for binCount in range(4, 24, 2):
+    bins = np.linspace(0, 35, binCount + 1)
+    centers = (bins[:-1] + bins[1:]) / 2
+
+    for row in data.itertuples():
+        if (row[1] == 0):
+            hitRate0 = pd.concat([hitRate0, pd.Series([row[2]])])
+            temp0 = pd.concat([temp0, pd.Series([row[3]])])
+        elif (row[1] == 1):
+            hitRate1 = pd.concat([hitRate1, pd.Series([row[2]])])
+            temp1 = pd.concat([temp1, pd.Series([row[3]])])
+        else:
+            hitRate2 = pd.concat([hitRate2, pd.Series([row[2]])])
+            temp2 = pd.concat([temp2, pd.Series([row[3]])])
+
+    hitRate0Assigned = np.digitize(temp0, bins)
+    hitRate0Avgs = np.array([np.mean(hitRate0[hitRate0Assigned == i]) for i in range(1, len(bins))])
+    hitRate1Assigned = np.digitize(temp1, bins)
+    hitRate1Avgs = np.array([np.mean(hitRate1[hitRate1Assigned == i]) for i in range(1, len(bins))])
+    hitRate2Assigned = np.digitize(temp2, bins)
+    hitRate2Avgs = np.array([np.mean(hitRate2[hitRate2Assigned == i]) for i in range(1, len(bins))])
+
+    plt.clf()
+    plt.plot(centers, hitRate0Avgs, color = "#00587E", label = "Cold")
+    plt.plot(centers, hitRate1Avgs, color = "#886400", label = "Warm")
+    # plt.plot(centers, hitRate2Avgs, color = "#575757", label = "Foreign")
+    plt.xlabel("Temp")
+    plt.ylabel("Hit Rate")
+    plt.grid(True)
+    plt.legend()
+    plt.savefig(f"Analyze_{binCount}Bins.png")
+
+for binCount in range(4, 41, 4):
+    plt.clf()
+    plt.hist([temp0, temp1], bins = binCount, color = ["#00587E", "#886400"])
+    plt.xlabel("Temp")
+    plt.ylabel("Data")
+    plt.savefig(f"Analyze_DataCount_{binCount}Bins.png")
+
+# plt.scatter(temp0, hitRate0, label = "寒冷地域", color = "#0A6E98")
+# plt.scatter(temp1, hitRate1, label = "温暖地域", color = "#AB841A")
+# plt.scatter(temp2, hitRate2, label = "海外", color = "#C2C2C2")
+
+# plt.xlabel("気温(°C)")
+# plt.ylabel("打率")
+
+# plt.legend()
+
+# plt.show()
