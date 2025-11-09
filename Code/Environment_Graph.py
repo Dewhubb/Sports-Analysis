@@ -128,7 +128,7 @@ plt.xlabel("気温 [℃]", fontsize=15, fontname="UD Digi Kyokasho N")
 plt.title("打率と気温の関係 (2025年3月28日〜10月4日)", fontsize=16, fontname="UD Digi Kyokasho N")
 plt.grid(color="gray", linestyle="--", linewidth=1, alpha=0.6)
 plt.tight_layout()
-plt.savefig('Code/graphs/Temperature.png')
+plt.savefig('Outputs/Dew/Temperature.png')
 plt.show()
 
 # ----------------------------------------------------------
@@ -153,7 +153,7 @@ plt.xlabel("湿度 [%]", fontsize=15, fontname="UD Digi Kyokasho N")
 plt.title("打率と湿度の関係 (2025年3月28日〜2025年10月4日)", fontsize=16, fontname="UD Digi Kyokasho N")
 plt.grid(color="gray", linestyle="--", linewidth=1, alpha=0.6)
 plt.tight_layout()
-plt.savefig('Code/graphs/Humidity.png')
+plt.savefig('Outputs/Dew/Humidity.png')
 plt.show()
 
 # ----------------------------------------------------------
@@ -178,7 +178,7 @@ plt.xlabel(" 1 時間あたりの日照時間 [h]", fontsize=15, fontname="UD Di
 plt.title("打率と 1 時間あたりの日照時間の関係 (2025年3月28日〜2025年10月4日)", fontsize=16, fontname="UD Digi Kyokasho N")
 plt.grid(color="gray", linestyle="--", linewidth=1, alpha=0.6)
 plt.tight_layout()
-plt.savefig('Code/graphs/Insolation.png')
+plt.savefig('Outputs/Dew/Insolation.png')
 plt.show()
 
 # ----------------------------------------------------------
@@ -203,7 +203,7 @@ plt.xlabel("視程 [km]", fontsize=15, fontname="UD Digi Kyokasho N")
 plt.title("打率と視程の関係 (2025年3月28日〜2025年10月4日)", fontsize=16, fontname="UD Digi Kyokasho N")
 plt.grid(color="gray", linestyle="--", linewidth=1, alpha=0.6)
 plt.tight_layout()
-plt.savefig('Code/graphs/Visibility.png')
+plt.savefig('Outputs/Dew/Visibility.png')
 plt.show()
 
 
@@ -231,5 +231,5 @@ plt.grid(color="gray", linestyle="--", linewidth=1, alpha=0.6)
 y_ticks = np.arange(0.0, 101, 10)
 plt.yticks(y_ticks)
 plt.tight_layout()
-plt.savefig('Code/graphs/Weather.png')
+plt.savefig('Outputs/Dew/Weather.png')
 plt.show()

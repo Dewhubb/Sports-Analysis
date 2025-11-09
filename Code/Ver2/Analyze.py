@@ -8,123 +8,120 @@ import warnings
 
 warnings.simplefilter(action='ignore', category=FutureWarning)
 
-plt.rcParams['font.family'] = 'sans-serif'
-plt.rcParams['font.sans-serif'] = ['Noto Sans JP', 'DejaVu Sans', 'Arial']
-
 playerDF = pd.read_csv("players2.csv")
 
 teamNames = {"Hiroshima": "広島東洋カープ", "Hokkaido": "北海道日本ハムファイターズ", "Fukuoka": "福岡ソフトバンクホークス", "Hanshin": "阪神タイガース", "Yomiuri": "読売ジャイアンツ"}
 
-# with open("analyze.csv", mode = "w", encoding = "utf-8", newline='') as file:
-#     writer = csv.writer(file, quoting = csv.QUOTE_NONE, delimiter='\t', escapechar='\t')
-#     writer.writerow(["エリア,打率,気温(°C)"])
+with open("analyze.csv", mode = "w", encoding = "utf-8", newline='') as file:
+    writer = csv.writer(file, quoting = csv.QUOTE_NONE, delimiter='\t', escapechar='\t')
+    writer.writerow(["エリア,打率,気温(°C)"])
 
-#     for key, value in teamNames.items():
-#         environmentDF = pd.read_csv(f"environment{key}.csv")
+    for key, value in teamNames.items():
+        environmentDF = pd.read_csv(f"environment{key}.csv")
 
-#         gameDF = pd.read_csv(f"game{key}.csv")
-#         gameTimeDF = pd.read_csv(f"gameTime{key}.csv")
+        gameDF = pd.read_csv(f"game{key}.csv")
+        gameTimeDF = pd.read_csv(f"gameTime{key}.csv")
 
-#         # old format
-#         # gameTimeDF["開始時間"] = gameTimeDF["時間帯"].str[:2].astype(int)
-#         # gameTimeDF["終了時間"] = gameTimeDF["時間帯"].str[5:].astype(int)
+        # old format
+        # gameTimeDF["開始時間"] = gameTimeDF["時間帯"].str[:2].astype(int)
+        # gameTimeDF["終了時間"] = gameTimeDF["時間帯"].str[5:].astype(int)
 
-#         environmentGameDF = pd.DataFrame(columns = environmentDF.columns)
+        environmentGameDF = pd.DataFrame(columns = environmentDF.columns)
 
-#         # 気象データ
-#         for row in gameTimeDF.itertuples():
-#             environmentDFBufferAppend = environmentDF[environmentDF["日付"] == row.matchID]
-#             environmentDFBufferAppend["時刻"] = environmentDFBufferAppend["時刻"].str[0:2].astype(int)
-#             environmentDFBufferAppend = environmentDFBufferAppend[(environmentDFBufferAppend["時刻"] >= row.開始時間) & (environmentDFBufferAppend["時刻"] <= row.終了時間)]
-#             environmentGameDF = (environmentDFBufferAppend if environmentGameDF.empty else pd.concat([environmentGameDF, environmentDFBufferAppend], ignore_index = True))
+        # 気象データ
+        for row in gameTimeDF.itertuples():
+            environmentDFBufferAppend = environmentDF[environmentDF["日付"] == row.matchID]
+            environmentDFBufferAppend["時刻"] = environmentDFBufferAppend["時刻"].str[0:2].astype(int)
+            environmentDFBufferAppend = environmentDFBufferAppend[(environmentDFBufferAppend["時刻"] >= row.開始時間) & (environmentDFBufferAppend["時刻"] <= row.終了時間)]
+            environmentGameDF = (environmentDFBufferAppend if environmentGameDF.empty else pd.concat([environmentGameDF, environmentDFBufferAppend], ignore_index = True))
 
-#         environmentGameDF = environmentGameDF.groupby("日付")["気温(°C)"].mean()
+        environmentGameDF = environmentGameDF.groupby("日付")["気温(°C)"].mean()
 
-#         playersHitRateToTemp = []
+        playersHitRateToTemp = []
 
-#         print(environmentGameDF)
+        print(environmentGameDF)
 
-#         # 試合データ
-#         for row in gameDF.itertuples():
-#             currentName = row[2]
-#             currentHit = int(row[3])
-#             currentHitRate = float(row[5])
-#             currentDate = row[1]
+        # 試合データ
+        for row in gameDF.itertuples():
+            currentName = row[2]
+            currentHit = int(row[3])
+            currentHitRate = float(row[5])
+            currentDate = row[1]
 
-#             if (currentHit == 0):
-#                 continue
+            if (currentHit == 0):
+                continue
         
-#             try:
-#                 currentAvgTemp = environmentGameDF[int(currentDate)]
-#             except:
-#                 continue
+            try:
+                currentAvgTemp = environmentGameDF[int(currentDate)]
+            except:
+                continue
 
-#             area = playerDF.loc[(playerDF["名前"] == currentName) & (playerDF["チーム"] == value)].エリア
+            area = playerDF.loc[(playerDF["名前"] == currentName) & (playerDF["チーム"] == value)].エリア
             
-#             # Obsolete
-#             # found = False
-#             # for i in range(len(playersHitRateToTemp)):
-#             #     if (currentName in playersHitRateToTemp[i]):
-#             #         found = True
-#             #         foundIndex = i
-#             #         break
+            # Obsolete
+            # found = False
+            # for i in range(len(playersHitRateToTemp)):
+            #     if (currentName in playersHitRateToTemp[i]):
+            #         found = True
+            #         foundIndex = i
+            #         break
 
-#             # if (found):
-#             #     playersHitRateToTemp[foundIndex][1].append(currentHitRate)
-#             #     playersHitRateToTemp[foundIndex][2].append(currentAvgTemp)
-#             # else:
-#             #     playersHitRateToTemp.append([currentName, [currentHitRate], [currentAvgTemp]])
+            # if (found):
+            #     playersHitRateToTemp[foundIndex][1].append(currentHitRate)
+            #     playersHitRateToTemp[foundIndex][2].append(currentAvgTemp)
+            # else:
+            #     playersHitRateToTemp.append([currentName, [currentHitRate], [currentAvgTemp]])
 
-#             writer.writerow([f"{area.iloc[0]},{currentHitRate},{currentAvgTemp}"])
+            writer.writerow([f"{area.iloc[0]},{currentHitRate},{currentAvgTemp}"])
 
-# for key, value in teamNames.items():
-#     with open(f"analyze{key}.csv", mode = "w", encoding = "utf-8", newline='') as file:
-#         writer = csv.writer(file, quoting = csv.QUOTE_NONE, delimiter='\t', escapechar='\t')
-#         writer.writerow(["エリア,打率,気温(°C)"])
+for key, value in teamNames.items():
+    with open(f"analyze{key}.csv", mode = "w", encoding = "utf-8", newline='') as file:
+        writer = csv.writer(file, quoting = csv.QUOTE_NONE, delimiter='\t', escapechar='\t')
+        writer.writerow(["エリア,打率,気温(°C)"])
 
         
-#         environmentDF = pd.read_csv(f"environment{key}.csv")
+        environmentDF = pd.read_csv(f"environment{key}.csv")
 
-#         gameDF = pd.read_csv(f"game{key}.csv")
-#         gameTimeDF = pd.read_csv(f"gameTime{key}.csv")
+        gameDF = pd.read_csv(f"game{key}.csv")
+        gameTimeDF = pd.read_csv(f"gameTime{key}.csv")
 
-#         # Old format
-#         # gameTimeDF["開始時間"] = gameTimeDF["時間帯"].str[:2].astype(int)
-#         # gameTimeDF["終了時間"] = gameTimeDF["時間帯"].str[5:].astype(int)
+        # Old format
+        # gameTimeDF["開始時間"] = gameTimeDF["時間帯"].str[:2].astype(int)
+        # gameTimeDF["終了時間"] = gameTimeDF["時間帯"].str[5:].astype(int)
 
-#         environmentGameDF = pd.DataFrame(columns = environmentDF.columns)
+        environmentGameDF = pd.DataFrame(columns = environmentDF.columns)
 
-#         # 気象データ
-#         for row in gameTimeDF.itertuples():
-#             environmentDFBufferAppend = environmentDF[environmentDF["日付"] == row.matchID]
-#             environmentDFBufferAppend["時刻"] = environmentDFBufferAppend["時刻"].str[0:2].astype(int)
-#             environmentDFBufferAppend = environmentDFBufferAppend[(environmentDFBufferAppend["時刻"] >= row.開始時間) & (environmentDFBufferAppend["時刻"] <= row.終了時間)]
-#             environmentGameDF = (environmentDFBufferAppend if environmentGameDF.empty else pd.concat([environmentGameDF, environmentDFBufferAppend], ignore_index = True))
+        # 気象データ
+        for row in gameTimeDF.itertuples():
+            environmentDFBufferAppend = environmentDF[environmentDF["日付"] == row.matchID]
+            environmentDFBufferAppend["時刻"] = environmentDFBufferAppend["時刻"].str[0:2].astype(int)
+            environmentDFBufferAppend = environmentDFBufferAppend[(environmentDFBufferAppend["時刻"] >= row.開始時間) & (environmentDFBufferAppend["時刻"] <= row.終了時間)]
+            environmentGameDF = (environmentDFBufferAppend if environmentGameDF.empty else pd.concat([environmentGameDF, environmentDFBufferAppend], ignore_index = True))
 
-#         environmentGameDF = environmentGameDF.groupby("日付")["気温(°C)"].mean()
+        environmentGameDF = environmentGameDF.groupby("日付")["気温(°C)"].mean()
 
-#         playersHitRateToTemp = []
+        playersHitRateToTemp = []
 
-#         print(environmentGameDF)
+        print(environmentGameDF)
 
-#         # 試合データ
-#         for row in gameDF.itertuples():
-#             currentName = row[2]
-#             currentHit = int(row[3])
-#             currentHitRate = float(row[5])
-#             currentDate = row[1]
+        # 試合データ
+        for row in gameDF.itertuples():
+            currentName = row[2]
+            currentHit = int(row[3])
+            currentHitRate = float(row[5])
+            currentDate = row[1]
 
-#             if (currentHit == 0):
-#                 continue
+            if (currentHit == 0):
+                continue
         
-#             try:
-#                 currentAvgTemp = environmentGameDF[int(currentDate)]
-#             except:
-#                 continue
+            try:
+                currentAvgTemp = environmentGameDF[int(currentDate)]
+            except:
+                continue
 
-#             area = playerDF.loc[(playerDF["名前"] == currentName) & (playerDF["チーム"] == value)].エリア
+            area = playerDF.loc[(playerDF["名前"] == currentName) & (playerDF["チーム"] == value)].エリア
 
-#             writer.writerow([f"{area.iloc[0]},{currentHitRate},{currentAvgTemp}"])
+            writer.writerow([f"{area.iloc[0]},{currentHitRate},{currentAvgTemp}"])
 
 data = pd.read_csv("analyze.csv")
 
@@ -164,11 +161,11 @@ for binCount in range(4, 24, 2):
     hitRate2Avgs = np.array([np.mean(hitRate2[hitRate2Assigned == i]) for i in range(1, len(bins))])
 
     plt.clf()
-    plt.plot(centers, hitRate0Avgs, color = "#00587E", label = "寒い地域")
-    plt.plot(centers, hitRate1Avgs, color = "#886400", label = "暖かい地域")
+    plt.plot(centers, hitRate0Avgs, color = "#00587E", label = "Cold")
+    plt.plot(centers, hitRate1Avgs, color = "#886400", label = "Warm")
     # plt.plot(centers, hitRate2Avgs, color = "#575757", label = "Foreign")
-    plt.xlabel("気温(°C)")
-    plt.ylabel("打率")
+    plt.xlabel("Temp")
+    plt.ylabel("Hit Rate")
     plt.grid(True)
     plt.legend()
     plt.savefig(f"Analyze_{binCount}Bins.png")
@@ -176,8 +173,8 @@ for binCount in range(4, 24, 2):
 for binCount in range(4, 41, 4):
     plt.clf()
     plt.hist([temp0, temp1], bins = binCount, color = ["#00587E", "#886400"])
-    plt.xlabel("気温(°C)")
-    plt.ylabel("サンプル数")
+    plt.xlabel("Temp")
+    plt.ylabel("Data")
     plt.savefig(f"Analyze_DataCount_{binCount}Bins.png")
 
 for key, value in teamNames.items():
@@ -219,11 +216,11 @@ for key, value in teamNames.items():
         hitRate2Avgs = np.array([np.mean(hitRate2[hitRate2Assigned == i]) for i in range(1, len(bins))])
 
         plt.clf()
-        plt.plot(centers, hitRate0Avgs, color = "#00587E", label = "寒い地域")
-        plt.plot(centers, hitRate1Avgs, color = "#886400", label = "暖かい地域")
+        plt.plot(centers, hitRate0Avgs, color = "#00587E", label = "Cold")
+        plt.plot(centers, hitRate1Avgs, color = "#886400", label = "Warm")
         # plt.plot(centers, hitRate2Avgs, color = "#575757", label = "Foreign")
-        plt.xlabel("気温(°C)")
-        plt.ylabel("打率")
+        plt.xlabel("Temp")
+        plt.ylabel("Hit Rate")
         plt.grid(True)
         plt.legend()
         plt.savefig(f"Analyze_{key}_{binCount}Bins.png")
@@ -231,6 +228,6 @@ for key, value in teamNames.items():
     for binCount in range(4, 41, 4):
         plt.clf()
         plt.hist([temp0, temp1], bins = binCount, color = ["#00587E", "#886400"])
-        plt.xlabel("気温(°C)")
-        plt.ylabel("サンプル数")
+        plt.xlabel("Temp")
+        plt.ylabel("Data")
         plt.savefig(f"Analyze_{key}_DataCount_{binCount}Bins.png")
