@@ -142,7 +142,6 @@ plt.show()
 # ----------------------------------------------------------
 # 【16】湿度と打率の関係の可視化 (散布図)
 # ----------------------------------------------------------
-
 plt.figure(figsize=(12, 6))
 plt.scatter(df['avg_humidity'], df['batting'], color="#1A50E4", edgecolors="#000000", s=60, alpha=0.8, linewidths=1)
 z = np.polyfit(df['avg_humidity'], df['batting'], 1) # 1次回帰（線形）
@@ -161,11 +160,9 @@ plt.grid(color="gray", linestyle="--", linewidth=1, alpha=0.6)
 plt.tight_layout()
 plt.savefig('Outputs/Dew/Humidity.png')
 plt.show()
-
 # ----------------------------------------------------------
 # 【17】日照時間と打率の関係の可視化 (散布図)
 # ----------------------------------------------------------
-
 plt.figure(figsize=(12, 6))
 plt.scatter(df['avg_insolation'], df['batting'], color="#E67E22", edgecolors="#000000", s=60, alpha=0.8, linewidths=1)
 z = np.polyfit(df["avg_insolation"], df['batting'], 1) # 1次回帰
@@ -184,11 +181,9 @@ plt.grid(color="gray", linestyle="--", linewidth=1, alpha=0.6)
 plt.tight_layout()
 plt.savefig('Outputs/Dew/Insolation.png')
 plt.show()
-
 # ----------------------------------------------------------
 # 【18】視程と打率の関係の可視化 (散布図)
 # ----------------------------------------------------------
-
 plt.figure(figsize=(12, 6))
 plt.scatter(df['avg_visibility'], df['batting'], color="#2E86C1", edgecolors="#000000", s=60, alpha=0.8, linewidths=1)
 z = np.polyfit(df['avg_visibility'], df['batting'], 1) # 1次回帰
@@ -207,12 +202,9 @@ plt.grid(color="gray", linestyle="--", linewidth=1, alpha=0.6)
 plt.tight_layout()
 plt.savefig('Outputs/Dew/Visibility.png')
 plt.show()
-
-
 # ----------------------------------------------------------
 # 【19】天気と打率の関係の可視化 (箱ひげ図)
 # ----------------------------------------------------------
-
 plt.figure(figsize=(8, 6))
 weather_groups = df.groupby('最頻天気')['batting'].apply(list)
 
