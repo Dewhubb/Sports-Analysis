@@ -14,9 +14,9 @@ from collections import Counter
 # データ読み込み
 # ----------------------------------------------------------
 
-game_df = pd.read_csv('data/game.csv', encoding='utf-8') # 試合成績データ（打数・打率など）
+game_df = pd.read_csv('Data/game.csv', encoding='utf-8') # 試合成績データ（打数・打率など）
 gameTime_df = pd.read_csv('Data/gameTime.csv', encoding='utf-8') # 試合時間データ（時間帯）
-env_df = pd.read_csv('data/Environment_Data.csv', encoding='utf-8') # 環境データ（気温・湿度・日照時間・視程・天気）
+env_df = pd.read_csv('Data/Environment_Data.csv', encoding='utf-8') # 環境データ（気温・湿度・日照時間・視程・天気）
 
 # ----------------------------------------------------------
 # 打数が0の行を除外（打率計算に不要なデータを削除）
@@ -29,6 +29,9 @@ game_df = game_df[game_df['打数'] > 0]
 # ----------------------------------------------------------
 
 game_df = game_df.groupby('matchID')['打率'].mean().reset_index()
+game_df['打率'] = game_df['打率'] * 100
+print(game_df)
+
 
 # ----------------------------------------------------------
 # 試合時間データの加工
@@ -117,12 +120,12 @@ plt.legend(fontsize=40, prop={"family": "UD Digi Kyokasho N"}, loc="upper right"
 plt.ylim(0.0, 1.0)
 plt.xlim(min(df['avg_temp']) + 2, max(df['avg_temp']) + 2)
 x_ticks = np.arange(int(min(df['avg_temp'])) - 2, int(max(df['avg_temp'])) + 3, 2)
-y_ticks = np.arange(0.0, 1.01, 0.1)
+y_ticks = np.arange(0.0, 101, 10)
 plt.xticks(x_ticks)
 plt.yticks(y_ticks)
-plt.ylabel("打率", fontsize=15, fontname="UD Digi Kyokasho N")
-plt.xlabel("気温 (℃)", fontsize=15, fontname="UD Digi Kyokasho N")
-plt.title("打率と気温 (℃) の関係 [2025年3月28日〜10月4日]", fontsize=16, fontname="UD Digi Kyokasho N")
+plt.ylabel("打率 [%]", fontsize=15, fontname="UD Digi Kyokasho N")
+plt.xlabel("気温 [℃]", fontsize=15, fontname="UD Digi Kyokasho N")
+plt.title("打率と気温の関係 (2025年3月28日〜10月4日)", fontsize=16, fontname="UD Digi Kyokasho N")
 plt.grid(color="gray", linestyle="--", linewidth=1, alpha=0.6)
 plt.tight_layout()
 plt.savefig('Code/graphs/Temperature.png')
@@ -142,12 +145,12 @@ plt.legend(fontsize=40, prop={"family": "UD Digi Kyokasho N"}, loc="upper right"
 plt.ylim(0.0, 1.0)
 plt.xlim(0, 100)
 x_ticks = np.arange(0, 101, 10)
-y_ticks = np.arange(0.0, 1.01, 0.1)
+y_ticks = np.arange(0.0, 101, 10)
 plt.xticks(x_ticks)
 plt.yticks(y_ticks)
-plt.ylabel("打率", fontsize=15, fontname="UD Digi Kyokasho N")
-plt.xlabel("湿度 (%)", fontsize=15, fontname="UD Digi Kyokasho N")
-plt.title("打率と湿度 (%) の関係 [2025年3月28日〜10月4日]", fontsize=16, fontname="UD Digi Kyokasho N")
+plt.ylabel("打率 [%]", fontsize=15, fontname="UD Digi Kyokasho N")
+plt.xlabel("湿度 [%]", fontsize=15, fontname="UD Digi Kyokasho N")
+plt.title("打率と湿度の関係 (2025年3月28日〜2025年10月4日)", fontsize=16, fontname="UD Digi Kyokasho N")
 plt.grid(color="gray", linestyle="--", linewidth=1, alpha=0.6)
 plt.tight_layout()
 plt.savefig('Code/graphs/Humidity.png')
@@ -167,12 +170,12 @@ plt.legend(fontsize=35, prop={"family": "UD Digi Kyokasho N"}, loc="upper right"
 plt.ylim(0.0, 1.0)
 plt.xlim(-0.05, 1.05)
 x_ticks = np.arange(0, 1.1, 0.1)
-y_ticks = np.arange(0.0, 1.01, 0.1)
+y_ticks = np.arange(0.0, 101, 10)
 plt.xticks(x_ticks)
 plt.yticks(y_ticks)
-plt.ylabel("打率", fontsize=15, fontname="UD Digi Kyokasho N")
-plt.xlabel("日照時間 (h)", fontsize=15, fontname="UD Digi Kyokasho N")
-plt.title("打率と日照時間 (h) の関係 [2025年3月28日〜10月4日]", fontsize=16, fontname="UD Digi Kyokasho N")
+plt.ylabel("打率 [%]", fontsize=15, fontname="UD Digi Kyokasho N")
+plt.xlabel(" 1 時間あたりの日照時間 [h]", fontsize=15, fontname="UD Digi Kyokasho N")
+plt.title("打率と 1 時間あたりの日照時間の関係 (2025年3月28日〜2025年10月4日)", fontsize=16, fontname="UD Digi Kyokasho N")
 plt.grid(color="gray", linestyle="--", linewidth=1, alpha=0.6)
 plt.tight_layout()
 plt.savefig('Code/graphs/Insolation.png')
@@ -192,12 +195,12 @@ plt.legend(fontsize=35, prop={"family": "UD Digi Kyokasho N"}, loc="upper right"
 plt.ylim(0.0, 1.0)
 plt.xlim(min(df['avg_visibility']), max(df['avg_visibility'])+0.5)
 x_ticks = np.arange(int(min(df['avg_visibility'])), int(max(df['avg_visibility']))+0.5, 1.0)
-y_ticks = np.arange(0.0, 1.01, 0.1)
+y_ticks = np.arange(0.0, 101, 10)
 plt.xticks(x_ticks)
 plt.yticks(y_ticks)
-plt.ylabel("打率", fontsize=15, fontname="UD Digi Kyokasho N")
-plt.xlabel("視程 (km)", fontsize=15, fontname="UD Digi Kyokasho N")
-plt.title("打率と視程 (km) の関係 [2025年3月28日〜10月4日]", fontsize=16, fontname="UD Digi Kyokasho N")
+plt.ylabel("打率 [%]", fontsize=15, fontname="UD Digi Kyokasho N")
+plt.xlabel("視程 [km]", fontsize=15, fontname="UD Digi Kyokasho N")
+plt.title("打率と視程の関係 (2025年3月28日〜2025年10月4日)", fontsize=16, fontname="UD Digi Kyokasho N")
 plt.grid(color="gray", linestyle="--", linewidth=1, alpha=0.6)
 plt.tight_layout()
 plt.savefig('Code/graphs/Visibility.png')
@@ -221,11 +224,11 @@ for median_line in bp['medians']:
     median_line.set(color='black')
 
 plt.xticks(fontsize=15, fontname="UD Digi Kyokasho N")  # adjust size and font
-plt.ylabel("打率", fontsize=15, fontname="UD Digi Kyokasho N")
+plt.ylabel("打率 [%]", fontsize=15, fontname="UD Digi Kyokasho N")
 plt.xlabel("天気", fontsize=15, fontname="UD Digi Kyokasho N")
-plt.title("打率と天気の関係 [2025年3月28日〜10月4日]", fontsize=16, fontname="UD Digi Kyokasho N")
+plt.title("打率と天気の関係 (2025年3月28日〜2025年10月4日)", fontsize=16, fontname="UD Digi Kyokasho N")
 plt.grid(color="gray", linestyle="--", linewidth=1, alpha=0.6)
-y_ticks = np.arange(0.0, 0.61, 0.1)
+y_ticks = np.arange(0.0, 101, 10)
 plt.yticks(y_ticks)
 plt.tight_layout()
 plt.savefig('Code/graphs/Weather.png')
