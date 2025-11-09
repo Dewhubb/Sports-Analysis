@@ -233,4 +233,3 @@ plt.yticks(y_ticks)
 plt.tight_layout()
 plt.savefig('Code/graphs/Weather.png')
 plt.show()
-
