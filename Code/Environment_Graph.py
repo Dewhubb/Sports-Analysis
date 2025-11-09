@@ -16,7 +16,7 @@ from collections import Counter
 
 game_df = pd.read_csv('Data/game.csv', encoding='utf-8') # 試合成績データ（打数・打率など）
 gameTime_df = pd.read_csv('Data/gameTime.csv', encoding='utf-8') # 試合時間データ（時間帯）
-env_df = pd.read_csv('Data/Environment_Data.csv', encoding='utf-8') # 環境データ（気温・湿度・日照時間・視程・天気）
+env_df = pd.read_csv('Data/Ver2/environmentHiroshima.csv', encoding='utf-8') # 環境データ（気温・湿度・日照時間・視程・天気）
 
 # ----------------------------------------------------------
 # 打数が0の行を除外（打率計算に不要なデータを削除）
@@ -54,8 +54,8 @@ game_df = pd.merge(game_df, gameTime_df, on='matchID')
 # ----------------------------------------------------------
 
 env_df['時刻'] = env_df['時刻'].str[:2].astype(int) # 時刻列から時間のみを抽出して整数型に変換
-env_df['日付'] = env_df['日付'].astype(str).apply(lambda x: f"{x[:4]}{int(x[4:6])}{int(x[6:])}") # 日付を整形 2025410
 env_df['日付'] = env_df['日付'].astype(int)
+
 # ----------------------------------------------------------
 # 日付(matchID)で打率データと環境データを結合
 # ----------------------------------------------------------
@@ -78,14 +78,21 @@ env_df = env_df.drop(columns=['時刻', 'matchID', '開始時間', '終了時間
 # 日付ごとにまとめてリスト化
 # ----------------------------------------------------------
 
+env_df['視程(km)'] = env_df['視程(km)'].fillna(0.0)
+env_df['日照時間(h)'] = env_df['日照時間(h)'].fillna(0.0).astype(float)
 df = env_df.groupby('日付').agg(list).reset_index()
 
 # ----------------------------------------------------------
 # 数値列の平均値を計算
 # ----------------------------------------------------------
 
+
+
 numeric_cols = ['気温(°C)', '湿度(%)', '日照時間(h)', '視程(km)', '打率']
 for col in numeric_cols:
+    print(col)
+    for i in df[col]:
+        print(i)
     df[col] = df[col].apply(lambda x: sum(x)/len(x) if isinstance(x, list) and len(x) > 0 else None)
 
 # ----------------------------------------------------------
@@ -162,7 +169,7 @@ plt.show()
 
 plt.figure(figsize=(12, 6))
 plt.scatter(df['avg_insolation'], df['batting'], color="#E67E22", edgecolors="#000000", s=60, alpha=0.8, linewidths=1)
-z = np.polyfit(df["avg_insolation"], df['batting'], 2) # 2次回帰
+z = np.polyfit(df["avg_insolation"], df['batting'], 1) # 1次回帰
 p = np.poly1d(z)
 plt.plot(df['avg_insolation'], p(df['avg_insolation']), color="#2E86C1", linewidth=2, label="トレンドライン")
 plt.legend(fontsize=35, prop={"family": "UD Digi Kyokasho N"}, loc="upper right")
