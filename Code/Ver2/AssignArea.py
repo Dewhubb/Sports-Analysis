@@ -20,6 +20,3 @@ with open("players.csv", mode = "w", encoding = "utf-8", newline='') as file:
         i += 1
         print(player.地域, len(player.地域))
         writer.writerow([f"{player.名前},{player.チーム},{player.地域},{val}"])
-
-print(playersDF)
-        

@@ -8,9 +8,21 @@ import warnings
 
 warnings.simplefilter(action='ignore', category=FutureWarning)
 
+plt.rcParams['font.family'] = 'sans-serif'
+plt.rcParams['font.sans-serif'] = ['Noto Sans JP', 'DejaVu Sans', 'Arial']
+
 playerDF = pd.read_csv("players2.csv")
 
-teamNames = {"Hiroshima": "広島東洋カープ", "Hokkaido": "北海道日本ハムファイターズ", "Fukuoka": "福岡ソフトバンクホークス", "Hanshin": "阪神タイガース", "Yomiuri": "読売ジャイアンツ"}
+teamNames = {"Hiroshima": "広島東洋カープ",
+             "Hokkaido": "北海道日本ハムファイターズ",
+             "Fukuoka": "福岡ソフトバンクホークス",
+             "Hanshin": "阪神タイガース",
+             "Yomiuri": "読売ジャイアンツ",
+             "DeNA": "横浜DeNAベイスターズ",
+             "Yakult": "東京ヤクルトスワローズ",
+             "Chiba": "千葉ロッテマリーンズ",
+             "Rakuten": "東北楽天ゴールデンイーグルス",
+             "Saitama": "埼玉西武ライオンズ"}
 
 with open("analyze.csv", mode = "w", encoding = "utf-8", newline='') as file:
     writer = csv.writer(file, quoting = csv.QUOTE_NONE, delimiter='\t', escapechar='\t')
@@ -21,10 +33,6 @@ with open("analyze.csv", mode = "w", encoding = "utf-8", newline='') as file:
 
         gameDF = pd.read_csv(f"game{key}.csv")
         gameTimeDF = pd.read_csv(f"gameTime{key}.csv")
-
-        # old format
-        # gameTimeDF["開始時間"] = gameTimeDF["時間帯"].str[:2].astype(int)
-        # gameTimeDF["終了時間"] = gameTimeDF["時間帯"].str[5:].astype(int)
 
         environmentGameDF = pd.DataFrame(columns = environmentDF.columns)
 
@@ -57,20 +65,6 @@ with open("analyze.csv", mode = "w", encoding = "utf-8", newline='') as file:
                 continue
 
             area = playerDF.loc[(playerDF["名前"] == currentName) & (playerDF["チーム"] == value)].エリア
-            
-            # Obsolete
-            # found = False
-            # for i in range(len(playersHitRateToTemp)):
-            #     if (currentName in playersHitRateToTemp[i]):
-            #         found = True
-            #         foundIndex = i
-            #         break
-
-            # if (found):
-            #     playersHitRateToTemp[foundIndex][1].append(currentHitRate)
-            #     playersHitRateToTemp[foundIndex][2].append(currentAvgTemp)
-            # else:
-            #     playersHitRateToTemp.append([currentName, [currentHitRate], [currentAvgTemp]])
 
             writer.writerow([f"{area.iloc[0]},{currentHitRate},{currentAvgTemp}"])
 
@@ -84,10 +78,6 @@ for key, value in teamNames.items():
 
         gameDF = pd.read_csv(f"game{key}.csv")
         gameTimeDF = pd.read_csv(f"gameTime{key}.csv")
-
-        # Old format
-        # gameTimeDF["開始時間"] = gameTimeDF["時間帯"].str[:2].astype(int)
-        # gameTimeDF["終了時間"] = gameTimeDF["時間帯"].str[5:].astype(int)
 
         environmentGameDF = pd.DataFrame(columns = environmentDF.columns)
 
@@ -161,11 +151,10 @@ for binCount in range(4, 24, 2):
     hitRate2Avgs = np.array([np.mean(hitRate2[hitRate2Assigned == i]) for i in range(1, len(bins))])
 
     plt.clf()
-    plt.plot(centers, hitRate0Avgs, color = "#00587E", label = "Cold")
-    plt.plot(centers, hitRate1Avgs, color = "#886400", label = "Warm")
-    # plt.plot(centers, hitRate2Avgs, color = "#575757", label = "Foreign")
-    plt.xlabel("Temp")
-    plt.ylabel("Hit Rate")
+    plt.plot(centers, hitRate0Avgs, color = "#00587E", label = "寒い地域")
+    plt.plot(centers, hitRate1Avgs, color = "#886400", label = "暖かい地域")
+    plt.xlabel("気温(°C)")
+    plt.ylabel("打率")
     plt.grid(True)
     plt.legend()
     plt.savefig(f"Analyze_{binCount}Bins.png")
@@ -173,8 +162,8 @@ for binCount in range(4, 24, 2):
 for binCount in range(4, 41, 4):
     plt.clf()
     plt.hist([temp0, temp1], bins = binCount, color = ["#00587E", "#886400"])
-    plt.xlabel("Temp")
-    plt.ylabel("Data")
+    plt.xlabel("気温(°C)")
+    plt.ylabel("サンプル数")
     plt.savefig(f"Analyze_DataCount_{binCount}Bins.png")
 
 for key, value in teamNames.items():
@@ -216,11 +205,10 @@ for key, value in teamNames.items():
         hitRate2Avgs = np.array([np.mean(hitRate2[hitRate2Assigned == i]) for i in range(1, len(bins))])
 
         plt.clf()
-        plt.plot(centers, hitRate0Avgs, color = "#00587E", label = "Cold")
-        plt.plot(centers, hitRate1Avgs, color = "#886400", label = "Warm")
-        # plt.plot(centers, hitRate2Avgs, color = "#575757", label = "Foreign")
-        plt.xlabel("Temp")
-        plt.ylabel("Hit Rate")
+        plt.plot(centers, hitRate0Avgs, color = "#00587E", label = "寒い地域")
+        plt.plot(centers, hitRate1Avgs, color = "#886400", label = "暖かい地域")
+        plt.xlabel("気温(°C)")
+        plt.ylabel("打率")
         plt.grid(True)
         plt.legend()
         plt.savefig(f"Analyze_{key}_{binCount}Bins.png")
@@ -228,6 +216,6 @@ for key, value in teamNames.items():
     for binCount in range(4, 41, 4):
         plt.clf()
         plt.hist([temp0, temp1], bins = binCount, color = ["#00587E", "#886400"])
-        plt.xlabel("Temp")
-        plt.ylabel("Data")
+        plt.xlabel("気温(°C)")
+        plt.ylabel("サンプル数")
         plt.savefig(f"Analyze_{key}_DataCount_{binCount}Bins.png")
