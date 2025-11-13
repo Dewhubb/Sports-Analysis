@@ -17,12 +17,12 @@ teamNames = {"Hiroshima": "広島東洋カープ",
              "Rakuten": "東北楽天ゴールデンイーグルス",
              "Saitama": "埼玉西武ライオンズ"}
 
-with open("Data/Ver2/players.csv", mode = "w", encoding = "utf-8", newline='') as file:
+with open("Data/Ver3/players.csv", mode = "w", encoding = "utf-8", newline='') as file:
     writer = csv.writer(file, quoting = csv.QUOTE_NONE, delimiter='\t')
     writer.writerow(["名前,チーム,地域,エリア"])
 
     for key, value in teamNames.items():
-        gameDF = pd.read_csv(f"Data/Ver2/game{key}.csv")
+        gameDF = pd.read_csv(f"Data/Ver3/game{key}.csv")
 
         players = []
 

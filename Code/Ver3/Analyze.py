@@ -11,7 +11,7 @@ warnings.simplefilter(action='ignore', category=FutureWarning)
 plt.rcParams['font.family'] = 'sans-serif'
 plt.rcParams['font.sans-serif'] = ['Noto Sans JP', 'DejaVu Sans', 'Arial']
 
-playerDF = pd.read_csv("Data/Ver2/players2.csv")
+playerDF = pd.read_csv("Data/Ver3/players2.csv")
 
 teamNames = {"Hiroshima": "広島東洋カープ",
              "Hokkaido": "北海道日本ハムファイターズ",
@@ -24,15 +24,16 @@ teamNames = {"Hiroshima": "広島東洋カープ",
              "Rakuten": "東北楽天ゴールデンイーグルス",
              "Saitama": "埼玉西武ライオンズ"}
 
-with open("Data/Ver2/analyze.csv", mode = "w", encoding = "utf-8", newline='') as file:
+with open("Data/Ver3/analyze.csv", mode = "w", encoding = "utf-8", newline='') as file:
     writer = csv.writer(file, quoting = csv.QUOTE_NONE, delimiter='\t', escapechar='\t')
     writer.writerow(["エリア,打率,気温(°C)"])
 
     for key, value in teamNames.items():
-        environmentDF = pd.read_csv(f"Data/Ver2/environment{key}.csv")
+        environmentDF = pd.read_csv(f"Data/Ver3/environment{key}.csv")
 
-        gameDF = pd.read_csv(f"Data/Ver2/game{key}.csv")
-        gameTimeDF = pd.read_csv(f"Data/Ver2/gameTime{key}.csv")
+        gameDF = pd.read_csv(f"Data/Ver3/game{key}.csv")
+        gameTimeDF = pd.read_csv(f"Data/Ver3/gameTime{key}.csv")
+        gameStadiumDF = pd.read_csv(f"Data/Ver3/gameStadium{key}.csv")
 
         environmentGameDF = pd.DataFrame(columns = environmentDF.columns)
 
@@ -56,7 +57,7 @@ with open("Data/Ver2/analyze.csv", mode = "w", encoding = "utf-8", newline='') a
             currentHitRate = float(row[5])
             currentDate = row[1]
 
-            if (currentHit == 0):
+            if ((currentHit == 0) or (gameStadiumDF[gameStadiumDF["matchID"] == currentDate]["球場"].values[0] != "マツダ")): # フィルタ
                 continue
         
             try:
@@ -69,15 +70,15 @@ with open("Data/Ver2/analyze.csv", mode = "w", encoding = "utf-8", newline='') a
             writer.writerow([f"{area.iloc[0]},{currentHitRate},{currentAvgTemp}"])
 
 for key, value in teamNames.items():
-    with open(f"Data/Ver2/analyze{key}.csv", mode = "w", encoding = "utf-8", newline='') as file:
+    with open(f"Data/Ver3/analyze{key}.csv", mode = "w", encoding = "utf-8", newline='') as file:
         writer = csv.writer(file, quoting = csv.QUOTE_NONE, delimiter='\t', escapechar='\t')
         writer.writerow(["エリア,打率,気温(°C)"])
 
-        
-        environmentDF = pd.read_csv(f"Data/Ver2/environment{key}.csv")
+        environmentDF = pd.read_csv(f"Data/Ver3/environment{key}.csv")
 
-        gameDF = pd.read_csv(f"Data/Ver2/game{key}.csv")
-        gameTimeDF = pd.read_csv(f"Data/Ver2/gameTime{key}.csv")
+        gameDF = pd.read_csv(f"Data/Ver3/game{key}.csv")
+        gameTimeDF = pd.read_csv(f"Data/Ver3/gameTime{key}.csv")
+        gameStadiumDF = pd.read_csv(f"Data/Ver3/gameStadium{key}.csv")
 
         environmentGameDF = pd.DataFrame(columns = environmentDF.columns)
 
@@ -92,8 +93,6 @@ for key, value in teamNames.items():
 
         playersHitRateToTemp = []
 
-        print(environmentGameDF)
-
         # 試合データ
         for row in gameDF.itertuples():
             currentName = row[2]
@@ -101,7 +100,7 @@ for key, value in teamNames.items():
             currentHitRate = float(row[5])
             currentDate = row[1]
 
-            if (currentHit == 0):
+            if ((currentHit == 0) or (gameStadiumDF[gameStadiumDF["matchID"] == currentDate]["球場"].values[0] != "マツダ")): # フィルタ
                 continue
         
             try:
@@ -113,7 +112,7 @@ for key, value in teamNames.items():
 
             writer.writerow([f"{area.iloc[0]},{currentHitRate},{currentAvgTemp}"])
 
-data = pd.read_csv("Data/Ver2/analyze.csv")
+data = pd.read_csv("Data/Ver3/analyze.csv")
 
 hitRate = []
 hitRate0 = pd.Series([])
@@ -157,17 +156,17 @@ for binCount in range(4, 25, 2):
     plt.ylabel("打率")
     plt.grid(True)
     plt.legend()
-    plt.savefig(f"Outputs/Anthony Ver2/Analyze_{binCount}Bins.png")
+    plt.savefig(f"Outputs/Anthony Ver3/Analyze_{binCount}Bins.png")
 
 for binCount in range(4, 25, 2):
     plt.clf()
     plt.hist([temp0, temp1], bins = binCount, color = ["#00587E", "#886400"])
     plt.xlabel("気温(°C)")
     plt.ylabel("サンプル数")
-    plt.savefig(f"Outputs/Anthony Ver2/Analyze_DataCount_{binCount}Bins.png")
+    plt.savefig(f"Outputs/Anthony Ver3/Analyze_DataCount_{binCount}Bins.png")
 
 for key, value in teamNames.items():
-    data = pd.read_csv(f"Data/Ver2/analyze{key}.csv")
+    data = pd.read_csv(f"Data/Ver3/analyze{key}.csv")
 
     hitRate = []
     hitRate0 = pd.Series([])
@@ -211,11 +210,11 @@ for key, value in teamNames.items():
         plt.ylabel("打率")
         plt.grid(True)
         plt.legend()
-        plt.savefig(f"Outputs/Anthony Ver2/Analyze_{key}_{binCount}Bins.png")
+        plt.savefig(f"Outputs/Anthony Ver3/Analyze_{key}_{binCount}Bins.png")
 
     for binCount in range(4, 25, 2):
         plt.clf()
         plt.hist([temp0, temp1], bins = binCount, color = ["#00587E", "#886400"])
         plt.xlabel("気温(°C)")
         plt.ylabel("サンプル数")
-        plt.savefig(f"Outputs/Anthony Ver2/Analyze_{key}_DataCount_{binCount}Bins.png")
+        plt.savefig(f"Outputs/Anthony Ver3/Analyze_{key}_DataCount_{binCount}Bins.png")

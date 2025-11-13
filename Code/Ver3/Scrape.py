@@ -32,15 +32,15 @@ teamCodes = {"Hiroshima": ["c", "広島東洋", "広"],
              "Rakuten": ["t", "東北楽天", "楽"],
              "Saitama": ["l", "埼玉西武", "西"]}
 
-stadiumList = pd.read_csv("Data/Ver2/stadiumList.csv")
+stadiumList = pd.read_csv("Data/Ver3/stadiumList.csv")
 
 driver = webdriver.Chrome(options=chrome_options)
 
 for teamName, teamCode in teamCodes.items():
-    with open(f"Data/Ver2/game{teamName}.csv", "w", encoding = "utf-8", newline = "") as file:
-        with open(f"Data/Ver2/gameTime{teamName}.csv", "w", encoding = "utf-8", newline = "") as file2:
-            with open(f"Data/Ver2/gameStadium{teamName}.csv", "w", encoding = "utf-8", newline = "") as file3:
-                with open(f"Data/Ver2/environment{teamName}.csv", "w", encoding = "utf-8", newline = "") as file4:
+    with open(f"Data/Ver3/game{teamName}.csv", "w", encoding = "utf-8", newline = "") as file:
+        with open(f"Data/Ver3/gameTime{teamName}.csv", "w", encoding = "utf-8", newline = "") as file2:
+            with open(f"Data/Ver3/gameStadium{teamName}.csv", "w", encoding = "utf-8", newline = "") as file3:
+                with open(f"Data/Ver3/environment{teamName}.csv", "w", encoding = "utf-8", newline = "") as file4:
                     writer = csv.writer(file, quoting = csv.QUOTE_NONE, delimiter='\t')
                     writer2 = csv.writer(file2, quoting = csv.QUOTE_NONE, delimiter='\t')
                     writer3 = csv.writer(file3, quoting = csv.QUOTE_NONE, delimiter='\t')

@@ -17,13 +17,13 @@ teamNames = {"Hiroshima": "広島東洋カープ",
 stadiums = []
 
 for key, value in teamNames.items():
-    gameDF = pd.read_csv(f"Data/Ver2/gameStadium{key}.csv")
+    gameDF = pd.read_csv(f"Data/Ver3/gameStadium{key}.csv")
     for row in gameDF.itertuples():
         currentStadium = row[2]
         if (currentStadium not in stadiums):
             stadiums.append(currentStadium)
 
-with open("Data/Ver2/stadiumList.csv", mode = "w", encoding = "utf-8", newline='') as file:
+with open("Data/Ver3/stadiumList.csv", mode = "w", encoding = "utf-8", newline='') as file:
     writer = csv.writer(file, quoting = csv.QUOTE_NONE, delimiter='\t', escapechar='\t')
     writer.writerow(["球場,prec_no,block_no"])
     for i in stadiums:

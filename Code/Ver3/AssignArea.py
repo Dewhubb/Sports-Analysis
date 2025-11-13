@@ -4,10 +4,10 @@
 import pandas as pd
 import csv
 
-playersDF = pd.read_csv("Data/Ver2/players.csv")
+playersDF = pd.read_csv("Data/Ver3/players.csv")
 
 i = 0
-with open("Data/Ver2/players.csv", mode = "w", encoding = "utf-8", newline='') as file:
+with open("Data/Ver3/players.csv", mode = "w", encoding = "utf-8", newline='') as file:
     writer = csv.writer(file, quoting = csv.QUOTE_NONE, delimiter='\t')
     writer.writerow(["名前,チーム,地域,エリア"])
     for player in playersDF.itertuples():
