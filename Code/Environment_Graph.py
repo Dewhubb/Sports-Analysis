@@ -12,6 +12,11 @@ game_df = pd.read_csv('Data/game.csv', encoding='utf-8')
 gameTime_df = pd.read_csv('Data/gameTime.csv', encoding='utf-8')
 env_df = pd.read_csv('Data/Ver2/environmentHiroshima.csv', encoding='utf-8')
 
+# マツダスタジアムの試合のみ使用
+gameStadium_df = pd.read_csv('Data/Ver2/gameStadiumHiroshima.csv', encoding='utf-8')
+gameStadium_df = gameStadium_df[gameStadium_df["球場"] == "マツダ"]
+game_df = pd.merge(game_df, gameStadium_df, left_on = "matchID", right_on = "matchID")
+
 # 打率計算
 game_df = game_df[game_df['打数'] > 0] 
 game_df = game_df.groupby('matchID')['打率'].mean().reset_index()
