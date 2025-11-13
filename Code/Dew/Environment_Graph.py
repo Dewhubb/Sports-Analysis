@@ -14,14 +14,8 @@ env_df = pd.read_csv('Data/Ver2/environmentHiroshima.csv', encoding='utf-8')
 
 # マツダスタジアムの試合データのみ使用
 gameStadium_df = pd.read_csv('Data/Ver2/gameStadiumHiroshima.csv', encoding='utf-8')
-
-
-print(gameStadium_df)
-quit()
 gameStadium_df = gameStadium_df[gameStadium_df["球場"] == "マツダ"]
-
 game_df = pd.merge(game_df, gameStadium_df, left_on = "matchID", right_on = "matchID")
-
 
 # 打率計算
 game_df = game_df[game_df['打数'] > 0] 
@@ -46,6 +40,7 @@ env_df = env_df[(env_df['時刻'] >= env_df['開始時間']) & (env_df['時刻']
 env_df['視程(km)'] = env_df['視程(km)'].fillna(0.0)
 env_df['日照時間(h)'] = env_df['日照時間(h)'].fillna(0.0).astype(float)
 df = env_df.groupby('日付').agg(list).reset_index()
+print(df)
 
 # 数値平均
 for col in ['気温(°C)','湿度(%)','日照時間(h)','視程(km)','打率']:
@@ -76,7 +71,7 @@ print(df)
 # 気温と打率の関係の可視化 (散布図)
 plt.figure(figsize=(12, 6))
 plt.scatter(df['avg_temp'], df['batting'], color="#4BA322", s=60, edgecolors="#000000", alpha=0.8, linewidths=1) # 散布図
-z = np.polyfit(df['avg_temp'], df['batting'], 1) # 1次回帰
+z = np.polyfit(df['avg_temp'], df['batting'], 2) # 2次回帰
 p = np.poly1d(z)
 plt.plot(df['avg_temp'], p(df['avg_temp']), color="#DC1111DC", linewidth=2, label="トレンドライン") # 回帰曲線
 plt.legend(fontsize=40, prop={"family": "UD Digi Kyokasho N"}, loc="upper right")
@@ -96,7 +91,7 @@ plt.show()
 # 湿度と打率の関係の可視化 (散布図)
 plt.figure(figsize=(12, 6))
 plt.scatter(df['avg_humidity'], df['batting'], color="#1A50E4", edgecolors="#000000", s=60, alpha=0.8, linewidths=1)
-z = np.polyfit(df['avg_humidity'], df['batting'], 1) # 1次回帰（線形）
+z = np.polyfit(df['avg_humidity'], df['batting'], 2) # 2次回帰（線形）
 p = np.poly1d(z)
 plt.plot(df['avg_humidity'], p(df['avg_humidity']), color="#FF7700DC", linewidth=2, label="トレンドライン")
 plt.legend(fontsize=40, prop={"family": "UD Digi Kyokasho N"}, loc="upper right")
@@ -116,7 +111,7 @@ plt.show()
 # 日照時間と打率の関係の可視化 (散布図)
 plt.figure(figsize=(12, 6))
 plt.scatter(df['avg_insolation'], df['batting'], color="#E67E22", edgecolors="#000000", s=60, alpha=0.8, linewidths=1)
-z = np.polyfit(df["avg_insolation"], df['batting'], 1) # 1次回帰
+z = np.polyfit(df["avg_insolation"], df['batting'], 2) # 2次回帰
 p = np.poly1d(z)
 plt.plot(df['avg_insolation'], p(df['avg_insolation']), color="#2E86C1", linewidth=2, label="トレンドライン")
 plt.legend(fontsize=35, prop={"family": "UD Digi Kyokasho N"}, loc="upper right")
@@ -136,7 +131,7 @@ plt.show()
 # 視程と打率の関係の可視化 (散布図)
 plt.figure(figsize=(12, 6))
 plt.scatter(df['avg_visibility'], df['batting'], color="#2E86C1", edgecolors="#000000", s=60, alpha=0.8, linewidths=1)
-z = np.polyfit(df['avg_visibility'], df['batting'], 1) # 1次回帰
+z = np.polyfit(df['avg_visibility'], df['batting'], 2) # 2次回帰
 p = np.poly1d(z)
 plt.plot(df['avg_visibility'], p(df['avg_visibility']), color="#1ABC9C", linewidth=2, label="トレンドライン")
 plt.legend(fontsize=35, prop={"family": "UD Digi Kyokasho N"}, loc="upper right")
